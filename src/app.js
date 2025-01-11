@@ -5,10 +5,16 @@ const app = express();
 app.get("/hello",(req, res)=>{
     res.send("Hello hello hello")
 })
-app.get("/test",(req, res)=>{
+
+//request params
+app.get("/test/:id/:name",(req, res)=>{
+    console.log(req.params);
     res.send("Hello from the server");
 })
+
+//request query
 app.post("/test",(req, res)=>{
+    console.log(req.query);
     res.send("Data saved successfully to the database");
 })
 app.patch("/test",(req,res)=>{
