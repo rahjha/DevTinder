@@ -2,14 +2,25 @@ const express = require("express");
 
 const app = express();
 
-app.use("/hello",(req, res)=>{
+app.get("/hello",(req, res)=>{
     res.send("Hello hello hello")
 })
-app.use("/test",(req, res)=>{
+app.get("/test",(req, res)=>{
     res.send("Hello from the server");
 })
-
-app.use("/",(req, res)=>{
+app.post("/test",(req, res)=>{
+    res.send("Data saved successfully to the database");
+})
+app.patch("/test",(req,res)=>{
+    res.send("Data patched successfully");
+})
+app.put("/test",(req,res)=>{
+    res.send("Data put is successfull");
+})
+app.delete("/test",(req,res)=>{
+    res.send("Data is deleted successfully from the database")
+})
+app.get("/",(req, res)=>{
     res.send("Namaste Rahul");
 })
 
