@@ -1,0 +1,17 @@
+1. There can be more than one route handlers for one route, there are three parameters accepted to the router handler function-req, res, next.
+and if you call next() function then next route handler is executed, otherwise it is not executed.
+e.g. app.use("/user",(req,res,next)=>{
+    console.log("Handling the route user!!");
+    res.send("1st Response");
+    next();
+},(req, res)=>{
+    console.log("Handling the route user 2!!");
+    res.send("2nd Response);
+})
+
+But the question is that why is this pattern of multiple route handlers needed, infact it is called middleware
+consider a scenario : admin is trying to getAllData or deleteAllData, then before this data is fetched or deleted, we need to validate
+if the admin is authorized or not to perform this activity.
+In this case, we can write a middleware/route handler which will check the authorization of all the api calls of /admin, and returns
+error from there itself in case of admin is not authorized, otherwise sends the next api request to getAllData or deleteAllData.
+

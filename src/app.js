@@ -1,33 +1,36 @@
 const express = require("express");
 
 const app = express();
+const {adminAuth,userAuth} = require("../middleware/adminAuth");
 
-app.get("/hello",(req, res)=>{
-    res.send("Hello hello hello")
+//app.use("/user",rh1, rh2, rh3, rh4, rh5)
+//app.use("/user",[rh1, rh2, rh3, rh4, rh5])
+//app.use("/user",rh1, [rh2, rh3, rh4], rh5)
+
+app.use("/admin", adminAuth);
+
+app.get("/admin/getAllData",(req, res)=>{
+    console.log("/admin/getAllData is called");
+    res.send("All data is fetched");
 })
 
-//request params
-app.get("/test/:id/:name",(req, res)=>{
-    console.log(req.params);
-    res.send("Hello from the server");
+app.get("/admin/deleteData",(req, res)=>{
+    console.log("/admin/deleteData is called");
+    res.send("Data is deleted");
 })
 
-//request query
-app.post("/test",(req, res)=>{
-    console.log(req.query);
-    res.send("Data saved successfully to the database");
+app.use("/user/data",userAuth, (req, res, next)=>{
+    console.log("Handling the route user!!");
+    //res.send("1st Response");
+    next();
+},(req, res)=>{
+    console.log("Handling the route user 2!!");
+    res.send("2nd Response");
 })
-app.patch("/test",(req,res)=>{
-    res.send("Data patched successfully");
-})
-app.put("/test",(req,res)=>{
-    res.send("Data put is successfull");
-})
-app.delete("/test",(req,res)=>{
-    res.send("Data is deleted successfully from the database")
-})
-app.get("/",(req, res)=>{
-    res.send("Namaste Rahul");
+
+app.use("/user/login",(req, res)=>{
+    console.log("User login is called");
+    res.send("User is logged in")
 })
 
 app.listen(7777,()=>{
