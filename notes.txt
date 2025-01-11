@@ -15,3 +15,18 @@ if the admin is authorized or not to perform this activity.
 In this case, we can write a middleware/route handler which will check the authorization of all the api calls of /admin, and returns
 error from there itself in case of admin is not authorized, otherwise sends the next api request to getAllData or deleteAllData.
 
+2. How error handling is done in api route handling?
+
+-Error-Handling Middleware
+
+Error-handling middleware in Express is identified by having four arguments: (err, req, res, next).
+It must be defined after all route handlers and other middleware.
+
+-How Errors Are Passed
+
+To trigger the error-handling middleware, you pass an error object to next() or throw an error in an asynchronous function.
+
+use try catch to write any error prone code and call next inside the catch block and this next call will call the error handling 
+middleware with arguments (err, req, res, next)
+
+3.
