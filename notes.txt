@@ -29,4 +29,13 @@ To trigger the error-handling middleware, you pass an error object to next() or 
 use try catch to write any error prone code and call next inside the catch block and this next call will call the error handling 
 middleware with arguments (err, req, res, next)
 
-3.
+3.How express.json() Works
+When a client sends a POST, PUT, or PATCH request with a JSON payload, express.json():
+    a. Reads the incoming JSON data in the request body.
+    b. Converts the JSON data into a JavaScript object.
+    c. Attaches the parsed object to the req.body property for easier access in your application.
+
+express.json() is a built-in middleware function in Express.js that parses incoming requests with JSON payloads. 
+It is used to process and transform the raw application/json data in the request body into a JavaScript object,
+making it accessible via req.body.
+
