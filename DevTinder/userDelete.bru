@@ -1,10 +1,10 @@
 meta {
-  name: user
+  name: userDelete
   type: http
-  seq: 3
+  seq: 5
 }
 
-get {
+delete {
   url: http://localhost:7777/user
   body: json
   auth: none
@@ -12,6 +12,6 @@ get {
 
 body:json {
   {
-    "emailId": "sheetaljha@gmail.com"
+    "userId": "67835a9abc4de4c549cb3754"
   }
 }

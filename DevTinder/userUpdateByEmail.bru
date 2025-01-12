@@ -1,0 +1,18 @@
+meta {
+  name: userUpdateByEmail
+  type: http
+  seq: 7
+}
+
+patch {
+  url: http://localhost:7777/userUpdateByEmail
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "firstName": "Mamta",
+    "emailId": "manojjha@gmail.com"
+  }
+}

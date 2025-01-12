@@ -1,0 +1,19 @@
+meta {
+  name: userUpdate
+  type: http
+  seq: 6
+}
+
+patch {
+  url: http://localhost:7777/user
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "userId": "678355d4459898cf4d9ee4ef",
+    "firstName": "Manoj",
+    "emailId": "manojjha@gmail.com"
+  }
+}

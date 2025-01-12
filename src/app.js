@@ -7,7 +7,7 @@ const User = require("./models/user");
 app.use(express.json());
 
 //get user by email
-app.use("/user", async(req, res)=>{
+app.get("/user", async(req, res)=>{
     const emailId = req.body.emailId;
     try{
         const users = await User.find({emailId: emailId});
@@ -24,7 +24,7 @@ app.use("/user", async(req, res)=>{
 })
 
 //get all user for feed api
-app.use("/feed", async(req, res)=>{
+app.get("/feed", async(req, res)=>{
     try{
         const users = await User.find({});
         res.send(users);
@@ -33,7 +33,7 @@ app.use("/feed", async(req, res)=>{
     }
 })
 
-app.use("/signup", async(req, res)=>{
+app.post("/signup", async(req, res)=>{
 
     const user = new User(req.body);
     try{
@@ -44,6 +44,44 @@ app.use("/signup", async(req, res)=>{
     }
 })
 
+//delete api
+app.delete("/user", async(req, res)=>{
+    const userId = req.body.userId;
+    console.log(userId);
+    try{
+        await User.findByIdAndDelete(userId);
+        res.send("User deleted successfully");
+    }catch(err){
+        res.status(500).send("something went wrong")
+    }
+})
+
+//update by userId using patch
+app.patch("/user", async(req, res)=>{
+    const userId = req.body.userId;
+    const data = req.body;
+
+    try{
+        const user = await User.findByIdAndUpdate({_id: userId}, data, {returnDocument:"before"});
+        res.send(user);
+    }catch(err){
+        res.status(500).send("something went wrong");
+    }
+})
+
+//find by emailId and update using patch
+app.patch("/userUpdateByEmail", async(req, res)=>{
+    const emailId = req.body.emailId;
+    const data = req.body;
+    console.log(emailId);
+    console.log(data);
+    try{
+        const user = await User.findOneAndUpdate({emailId: emailId}, data, {returnDocument:"after"});
+        res.send(user);
+    }catch(err){
+        res.status(500).send("something went wrong");
+    }
+})
 
 connectDB().then(()=>{
     console.log('Database connected successfully');
