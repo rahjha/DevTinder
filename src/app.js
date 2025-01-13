@@ -47,7 +47,6 @@ app.post("/signup", async(req, res)=>{
 //delete api
 app.delete("/user", async(req, res)=>{
     const userId = req.body.userId;
-    console.log(userId);
     try{
         await User.findByIdAndDelete(userId);
         res.send("User deleted successfully");
@@ -57,15 +56,24 @@ app.delete("/user", async(req, res)=>{
 })
 
 //update by userId using patch
-app.patch("/user", async(req, res)=>{
-    const userId = req.body.userId;
+app.patch("/user/:userId", async(req, res)=>{
+    const userId = req.params?.userId;
     const data = req.body;
-
+    console.log("userId", userId);
     try{
-        const user = await User.findByIdAndUpdate({_id: userId}, data, {returnDocument:"before"});
+        const ALLOWED_FIELD_UPDATE = ["photoUrl","about","gender","age","skills"];
+        const isUpdateAllowed = Object.keys(data).every((k)=>ALLOWED_FIELD_UPDATE.includes(k));
+        console.log("isUpdateAllowed: ", isUpdateAllowed);
+        if(!isUpdateAllowed){
+            throw new Error("Update not allowed");
+        }
+        if(data?.skills.length>10){
+            throw new Error("There cannot be mroe than 10 skills");
+        }
+        const user = await User.findByIdAndUpdate({_id: userId}, data, {returnDocument:"before"}, {runValidators:"true"});
         res.send(user);
     }catch(err){
-        res.status(500).send("something went wrong");
+        res.status(500).send(err.message);
     }
 })
 
@@ -73,8 +81,7 @@ app.patch("/user", async(req, res)=>{
 app.patch("/userUpdateByEmail", async(req, res)=>{
     const emailId = req.body.emailId;
     const data = req.body;
-    console.log(emailId);
-    console.log(data);
+
     try{
         const user = await User.findOneAndUpdate({emailId: emailId}, data, {returnDocument:"after"});
         res.send(user);
