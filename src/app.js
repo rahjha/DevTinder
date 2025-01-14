@@ -4,9 +4,12 @@ const connectDB = require("./config/database");
 const User = require("./models/user");
 const validateSignUpData = require("./utils/validation");
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 
 //it is a middleware given by express to convert json to javascript object
 app.use(express.json());
+app.use(cookieParser());
 
 //get user by email
 app.get("/user", async(req, res)=>{
@@ -23,7 +26,7 @@ app.get("/user", async(req, res)=>{
         res.status(500).send("Something went wrong");
     }
     
-})
+});
 
 //get all user for feed api
 app.get("/feed", async(req, res)=>{
@@ -33,17 +36,15 @@ app.get("/feed", async(req, res)=>{
     }catch(err){
         res.status(500).send("Something went wrong");
     }
-})
+});
 
 app.post("/signup", async(req, res)=>{
-    
+    console.log("signup api is called");
     try{
-        validateSignUpData(req);
-    
+        validateSignUpData(req);    
         //Encrypt the password using npm bcrypt module
         const {firstName, lastName, emailId, password, age, gender} = req.body;
         const passwordHash = await bcrypt.hash(password, 10);
-        console.log(passwordHash);
         const user = new User({
             firstName,
             lastName,
@@ -57,7 +58,7 @@ app.post("/signup", async(req, res)=>{
     }catch(err){
         res.status(400).send("ERROR: "+err.message)
     }
-})
+});
 
 //delete api
 app.delete("/user", async(req, res)=>{
@@ -68,7 +69,7 @@ app.delete("/user", async(req, res)=>{
     }catch(err){
         res.status(500).send("something went wrong")
     }
-})
+});
 
 //update by userId using patch
 app.patch("/user/:userId", async(req, res)=>{
@@ -89,7 +90,7 @@ app.patch("/user/:userId", async(req, res)=>{
     }catch(err){
         res.status(500).send(err.message);
     }
-})
+});
 
 //find by emailId and update using patch
 app.patch("/userUpdateByEmail", async(req, res)=>{
@@ -102,7 +103,7 @@ app.patch("/userUpdateByEmail", async(req, res)=>{
     }catch(err){
         res.status(500).send("something went wrong");
     }
-})
+});
 
 //login api
 app.post("/login", async(req, res)=>{
@@ -115,15 +116,43 @@ app.post("/login", async(req, res)=>{
         if(!user){
             throw new Error("Invalid credentials");
         }
-        
+
         const isPasswordValid = await bcrypt.compare(password, user.password);
-        if(isPasswordValid){
+        if(isPasswordValid){            
+            //create a jwt token
+            const token = jwt.sign({_id: user._id},"SheetalRahul@19924");
+            console.log(token);
+            //set the token in cookies and send it to user
+            res.cookie("token",token);
             res.send("Login successfull");
         }else{
             throw new Error("Invalid credentials");
         }
     }catch(err){
         res.status(400).send("ERROR: "+err.message);
+    }
+});
+
+//profile api
+app.post("/profile", async(req, res)=>{
+    try{
+        //get the cookie from request and validate the cookie - this is done using jsonwebtoken npm package
+        //once the cookie is validate, then return the response, else return error response
+        const cookie = req.cookies;
+        const {token} = cookie;
+        if(!token){
+            throw new Error("Invalid token");
+        }
+        const decodedMessage = await jwt.verify(token, "SheetalRahul@19924")
+        const {_id} = decodedMessage;
+        
+        const user = await User.findById(_id);
+        if(!user){
+            throw new Error("User doesn't exist");
+        }
+        res.send(user);
+    }catch(err){
+        res.status(400).send("ERROR : "+err.message);
     }
 });
 
