@@ -1,0 +1,18 @@
+meta {
+  name: profileEdit
+  type: http
+  seq: 12
+}
+
+patch {
+  url: http://localhost:7777/profile/edit
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "emailId" : "mamata@gmail.com",
+    "skills" : ["I am a fantastic cook and mom"]
+  }
+}

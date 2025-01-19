@@ -8,5 +8,4 @@ requestRouter.post("/sendConnectionRequest", userAuth, (req, res)=>{
     res.send(user.firstName +" sent the connection request..");
 });
 
-
 module.exports = requestRouter;
