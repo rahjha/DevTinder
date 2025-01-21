@@ -42,7 +42,7 @@ authRouter.post("/login", async(req, res)=>{
             const token = await user.getJWT();// this method is defined as helper method in User schema
             //set the token in cookies and send it to user
             res.cookie("token",token, {expires: new Date(Date.now() + 900000)});
-            res.send("Login successfull");
+            res.send(user);
         }else{
             throw new Error("Invalid credentials");
         }
