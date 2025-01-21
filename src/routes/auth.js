@@ -1,12 +1,11 @@
 const express = require("express");
 const authRouter = express.Router();
 const bcrypt = require("bcrypt");
-const validateSignUpData = require("../utils/validation");
+const {validateSignUpData} = require("../utils/validation");
 const User = require("../models/user");
 
 //signup api
 authRouter.post("/signup", async(req, res)=>{
-    console.log("signup api is called");
     try{
         validateSignUpData(req);    
         //Encrypt the password using npm bcrypt module
