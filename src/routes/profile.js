@@ -7,7 +7,7 @@ const User = require("../models/user");
 
 
 //profile/view api
-profileRouter.post("/profile/view",userAuth, async (req, res)=>{
+profileRouter.get("/profile/view",userAuth, async (req, res)=>{
     try{
         const user = req.user;
         res.send(user);
