@@ -15,7 +15,7 @@ userRouter.get("/user/requests/received", userAuth, async(req, res)=>{
         const connectionRequests = await connectionRequestModel.find({
             toUserId: loggedInUser._id,
             status: "interested",
-        }).populate("fromUserId", ["firstName","lastName"]);
+        }).populate("fromUserId", ["_id","firstName", "lastName", "photoUrl", "age", "gender", "about"]);
         
         res.json({
             message: "Data fetched successfully",
@@ -41,7 +41,7 @@ userRouter.get("/user/connection", userAuth, async (req, res)=>{
                 {toUserId: loggedInUser._id, status: "accepted"},
                 {fromUserId: loggedInUser._id, status: "accepted"},
             ]
-        }).populate("fromUserId",["firstName", "lastName"]).populate("toUserId",["firstName", "lastName"]);
+        }).populate("fromUserId",["_id","firstName", "lastName", "photoUrl", "age", "gender", "about"]).populate("toUserId",["_id","firstName", "lastName","photoUrl", "age", "gender", "about"]);
 
         const data = connectionRequest.map((row)=>{
             if(row.fromUserId._id.toString() === loggedInUser._id.toString()){
@@ -89,7 +89,7 @@ userRouter.get("/user/feed", userAuth, async(req, res)=>{
                 {_id: {$ne: loggedInUser._id}}
             ]
         })
-        .select("firstName lastName emailId gender")
+        .select("firstName lastName emailId gender photoUrl age about")
         .skip(skip)
         .limit(limit);
 
